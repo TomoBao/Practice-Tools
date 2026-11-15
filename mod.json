@@ -1,0 +1,35 @@
+
+{
+    "geode": "6.0.0-alpha.2",
+    "gd": {
+        "win": "2.2091"
+    },
+    "id": "tomobao.practice-tools",
+    "name": "Practice Tools",
+    "version": "v1.0.0",
+    "developer": "TOMOBao",
+    "description": "Useful training tools for Geometry Dash practice mode.",
+    "links": {
+        "source": "https://github.com/TomoBao/Practice-Tools"
+    },
+    "settings": {
+        "show-hud": {
+            "name": "Practice HUD",
+            "description": "Show practice statistics while playing.",
+            "type": "bool",
+            "default": true
+        },
+        "show-checkpoints": {
+            "name": "Checkpoint Counter",
+            "description": "Show the number of active checkpoints.",
+            "type": "bool",
+            "default": true
+        },
+        "show-progress": {
+            "name": "Progress Tracker",
+            "description": "Show current and best practice progress.",
+            "type": "bool",
+            "default": true
+        }
+    }
+}
