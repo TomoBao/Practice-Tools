@@ -1,0 +1,54 @@
+name: Build Practice Tools
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Windows x64
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Checkout Geode bindings
+        uses: actions/checkout@v7
+        with:
+          repository: geode-sdk/bindings
+          path: bindings-repo
+
+      - name: Fix Geode 2.2091 bindings
+        shell: pwsh
+        run: |
+          $file = 'bindings-repo/bindings/2.2091/inline/FLAlertLayer.cpp'
+          if (-not (Test-Path $file)) { throw "Missing bindings file: $file" }
+          $text = Get-Content -Raw $file
+          $fixed = $text.Replace('static float FLAlertLayer::keyboardRaise(', 'float FLAlertLayer::keyboardRaise(')
+          if ($fixed -ne $text) {
+            Set-Content -Path $file -Value $fixed -NoNewline
+            Write-Host 'Applied C2724 workaround.'
+          } else {
+            Write-Host 'No matching static definition; patch not needed.'
+          }
+
+      - name: Build the mod
+        id: build
+        uses: geode-sdk/build-geode-mod@main
+        env:
+          GEODE_BINDINGS_REPO_PATH: ${{ github.workspace }}/bindings-repo
+        with:
+          sdk: 'given'
+          target: Win64
+          combine: false
+
+      - name: Upload Practice Tools
+        uses: actions/upload-artifact@v7
+        with:
+          name: Practice-Tools-Windows
+          path: ${{ steps.build.outputs.build-output }}/*.geode
+          if-no-files-found: error
